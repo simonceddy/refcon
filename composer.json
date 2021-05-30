@@ -1,0 +1,25 @@
+{
+    "name": "simoneddy/refcon",
+    "description": "Basic reflection constructor",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Simon Eddy",
+            "email": "simon@simoneddy.com.au"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+       "psr-4": {
+          "Eddy\\RefCon\\": "src"
+       }
+    },
+    "config": {
+       "bin-dir": "bin"
+    },
+    "require": {
+        "psr/container": "^2.0"
+    }
+}
