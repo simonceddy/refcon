@@ -21,5 +21,8 @@
     },
     "require": {
         "psr/container": "^1.1|^2.0"
+    },
+    "require-dev": {
+        "pimple/pimple": "^3.5"
     }
 }
