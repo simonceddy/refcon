@@ -5,6 +5,8 @@ use Psr\Container\ContainerInterface;
 
 class ReflectionConstructor
 {
+    use CommonConcerns;
+
     protected ContainerInterface $container;
 
     public function __construct(ContainerInterface $container = null)
@@ -12,62 +14,13 @@ class ReflectionConstructor
         !isset($container) ?: $this->container = $container;
     }
 
-    protected function resolveParameter(\ReflectionParameter $param)
+    protected function isInContainer(string $name): bool
     {
-        $type = $param->getType();
-        $name = $type->getName();
-        if (isset($this->container)
-            && ($type) !== null
-            && $this->container->has($name)
-        ) {
-            return $this->container->get($name);
-        }
-
-        if (class_exists($name)
-            && ($resolved = $this->create($name)) !== null
-        ) {
-            return $resolved;
-        }
-
-        if ($param->isDefaultValueAvailable()) {
-            return $param->getDefaultValue();
-        }
-
-        return null;
+        return isset($this->container) && $this->container->has($name);
     }
 
-    protected function resolveConstructorParams(array $params)
+    protected function getFromContainer(string $name): mixed
     {
-        $resolvedParams = [];
-
-        foreach ($params as $param) {
-            $resolvedParams[] = $this->resolveParameter($param);
-        }
-
-        return $resolvedParams;
-    }
-
-    public function create(string $className)
-    {
-        if (!class_exists($className)) {
-            throw new \InvalidArgumentException(
-                'Could not resolve ' . $className
-            );
-        }
-
-        $reflection = new \ReflectionClass($className);
-
-        $constructor = $reflection->getConstructor();
-
-        if (!$constructor
-            || empty($params = $constructor->getParameters())
-        ) {
-            return new $className;
-        }
-
-        $resolvedParams = $this->resolveConstructorParams($params);
-        // dd($resolvedParams);
-
-        return $reflection->newInstanceArgs($resolvedParams);
+        return $this->container->get($name);
     }
 }
